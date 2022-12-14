@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello world</title>
+</head>
+
+<body>
+
+  <script src="../assets/d3.min.js"></script>
+  <script>
+
+    const width = 400
+    const height = 400
+    const padding = { top: 20, bottom: 20, left: 40, right: 40 }
+
+    let svg = d3.select('body')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+
+    let scale = d3.scaleLinear()
+      .domain([0, 1])
+      .range([0, width - padding.left - padding.right])
+
+    let axis = d3.axisBottom(scale)
+      .ticks(10) //控制坐标轴上的刻度个数
+      .tickSize(10) //控制刻度的大小
+      .tickPadding(5) //设置标签数字与坐标轴的距离
+      .tickFormat(d3.format(".0%")) //设置标签数字的格式
+
+    svg.append('g')
+      .attr("transform", 'translate(40, 0)')
+      .call(axis)
+
+  </script>
+</body>
+
+</html>
