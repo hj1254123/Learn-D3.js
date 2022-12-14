@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello world</title>
+</head>
+
+<body>
+  <p>Apple</p>
+  <p>Pear</p>
+  <p>Banana</p>
+  <script src="../assets/d3.min.js"></script>
+  <script>
+    // ## 选择元素和js一致
+    // - d3.select()：是选择所有指定元素的第一个
+    // - d3.selectAll()：是选择指定元素的全部
+    // 它们的返回值，被称为“选择集”
+
+    // ## D3 中是通过以下两个函数来绑定数据的：
+    // - datum()：绑定一个数据到选择集上
+    // - data()：绑定一个数组到选择集上，数组的各项值分别与选择集的各元素绑定
+    // data() 更常用
+
+    // - datum() 演示
+    // let str = 'Hi'
+    // d3.select('body')
+    //   .selectAll('p')
+    //   .datum(str)
+    //   .text((d, i) => {
+    //     return `第 ${i} 个元素绑定的数据是 ${d}`
+    //   })
+
+    // - data() 演示
+    let dataset = ["I like dog", "I like cat", "I like snake"]
+    d3.select('body')
+      .selectAll('p')
+      .data(dataset)
+      .text((d, i) => {
+        return d
+      })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello world</title>
+</head>
+
+<body>
+
+  <script src="../assets/d3.min.js"></script>
+  <script>
+    // ## 添加画布
+    let width = 300
+    let height = 300
+
+    let svg = d3.select('body')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+
+    // ## 绘制矩形
+    // 绘制矩形使用 rect 标签
+    // 矩形的属性，常用的有四个：
+    // - x：矩形左上角的 x 坐标
+    // - y：矩形左上角的 y 坐标
+    // - width：矩形的宽度
+    // - height：矩形的高度
+    let dataset = [250, 210, 170, 130, 90] //数据（表示矩形的宽度）
+    let rectHeight = 25 //每个矩形所占的像素高度(包括空白)
+
+
+    svg.selectAll("rect") //选择svg内所有的矩形
+      .data(dataset) //绑定数组
+      .enter() //指定选择集的enter部分
+      .append('rect') //添加足够数量的矩形元素
+      .attr('x', 20)
+      .attr('y', (d, i) => {
+        return i * rectHeight
+      })
+      .attr('width', d => d)
+      .attr('height', rectHeight - 2)
+      .attr('fill', 'lightblue')
+
+  </script>
+</body>
+
+</html>

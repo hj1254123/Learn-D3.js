@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hello world</title>
+</head>
+
+<body>
+  <p>1</p>
+  <p>1</p>
+  <script src="../assets/d3.min.js"></script>
+  <script>
+    let p = d3.select('body')
+      .selectAll('p')
+      .text('hello world')
+    // 这个p被称为选择集。
+    // 使用 d3.select() 或 d3.selectAll() 选择元素后返回的对象，就是选择集。
+    p.style("color", "red")
+      .style("font-size", "72px")
+  </script>
+</body>
+
+</html>
