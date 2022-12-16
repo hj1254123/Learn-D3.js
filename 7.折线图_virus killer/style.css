@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+#yes-line circle {
+  fill: lightblue;
+}
+
+#yes-line path {
+  fill: none;
+  stroke: cornflowerblue;
+  stroke-width: 2px;
+}
