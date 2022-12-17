@@ -32,6 +32,7 @@ const dateAxis = content.append('g')
 
 const yesAxis = content.append('g')
   .attr('id', 'yes-axis')
+
 // - 读取数据
 d3.json('./assets/sh_day.json')
   .then(drawLineChart)
@@ -44,29 +45,29 @@ function drawLineChart(dataset) {
   // 所以我们需要借助这个工具函数去转换。
   const parseTime = d3.timeParse('%Y-%m-%d')
 
-  // 时间比例尺
+  // - 时间比例尺
   const dateScale = d3.scaleTime()
     .domain(d3.extent(dataset, item => parseTime(item.date))) //定义域
     .range([0, contentWidth]) //值域
-    .nice()
+    .nice() //修改domain把数据变成最近的整数，更好看。
 
-  // 笔记
+  // 📌笔记
   console.log(d3.extent(dataset, item => parseTime(item.date)))
   /*
   d3.extent(array[,accessor])：给定一个数组，返回[最小值, 最大值]
-  本例给的不是一个一维数组，所以要用到 item => parseTime(item.date)
-  又因为我们的时间格式不是标准时间格式它无法比较，所以要借助parseTime来转换。
+  本例给的不是一个一维数组，所以要用到 item => parseTime(item.date) 拿出date数据
+  又因为我们的时间格式不是标准时间格式 extent 无法比较，所以要借助 parseTime 来转换。
   最后打印结果：["2022-03-31T16:00:00.000Z","2022-05-07T16:00:00.000Z"]
-  我们的时区+8，对比dataset，可知最小值，最大值是正确的。
+  我们的时区+8，对比 dataset 可知，最小值、最大值是正确的。
  */
 
-  // 确诊人数，线性比例尺
+  // - 确诊人数，线性比例尺
   const yesScale = d3.scaleLinear()
     .domain(d3.extent(dataset, item => item.yes))
     .range([contentHeight, dms.margin.top])
     .nice()
 
-  // 绘制确诊人数折线图
+  // - 绘制确诊人数折线图
   // 绘制点
   yesLine.selectAll('circle')
     .data(dataset)
@@ -83,7 +84,7 @@ function drawLineChart(dataset) {
   yesLine.append('path')
     .attr('d', lineGenerator(dataset))
 
-  // date坐标轴
+  // - date坐标轴
   const dateAxisGenerator = d3.axisBottom()
     .scale(dateScale)
     .ticks(6, d3.timeFormat('%m-%d'))
@@ -96,16 +97,16 @@ function drawLineChart(dataset) {
     .attr('y', 0)
     .text('日期')
 
-  // 确诊人数坐标轴
+  // - 确诊人数坐标轴
   const yesAxisGenerator = d3.axisLeft()
     .scale(yesScale)
     .ticks(6)
   yesAxis.call(yesAxisGenerator)
 
   yesAxis.append('text')
-  .attr('id', 'yes-title')
-  .attr('x', 0)
-  .attr('y', 30)
-  .text('确诊人数')
+    .attr('id', 'yes-title')
+    .attr('x', 0)
+    .attr('y', 30)
+    .text('确诊人数')
 }
 
