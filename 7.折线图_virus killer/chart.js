@@ -26,6 +26,12 @@ const content = svg.append('g')
 const yesLine = content.append('g')
   .attr('id', 'yes-line')
 
+const dateAxis = content.append('g')
+  .attr('id', 'date-axis')
+  .style('transform', `translateY(${contentHeight}px)`)
+
+const yesAxis = content.append('g')
+  .attr('id', 'yes-axis')
 // - 读取数据
 d3.json('./assets/sh_day.json')
   .then(drawLineChart)
@@ -42,6 +48,7 @@ function drawLineChart(dataset) {
   const dateScale = d3.scaleTime()
     .domain(d3.extent(dataset, item => parseTime(item.date))) //定义域
     .range([0, contentWidth]) //值域
+    .nice()
 
   // 笔记
   console.log(d3.extent(dataset, item => parseTime(item.date)))
@@ -57,6 +64,7 @@ function drawLineChart(dataset) {
   const yesScale = d3.scaleLinear()
     .domain(d3.extent(dataset, item => item.yes))
     .range([contentHeight, dms.margin.top])
+    .nice()
 
   // 绘制确诊人数折线图
   // 绘制点
@@ -70,8 +78,34 @@ function drawLineChart(dataset) {
   const lineGenerator = d3.line()
     .x(item => dateScale(parseTime(item.date)))
     .y(item => yesScale(item.yes))
-    // .curve(d3.curveBasis)
+    .curve(d3.curveCatmullRom)
 
   yesLine.append('path')
     .attr('d', lineGenerator(dataset))
+
+  // date坐标轴
+  const dateAxisGenerator = d3.axisBottom()
+    .scale(dateScale)
+    .ticks(6, d3.timeFormat('%m-%d'))
+
+  dateAxis.call(dateAxisGenerator)
+
+  dateAxis.append('text')
+    .attr('id', 'date-title')
+    .attr('x', contentWidth + 30)
+    .attr('y', 0)
+    .text('日期')
+
+  // 确诊人数坐标轴
+  const yesAxisGenerator = d3.axisLeft()
+    .scale(yesScale)
+    .ticks(6)
+  yesAxis.call(yesAxisGenerator)
+
+  yesAxis.append('text')
+  .attr('id', 'yes-title')
+  .attr('x', 0)
+  .attr('y', 30)
+  .text('确诊人数')
 }
+

@@ -13,10 +13,29 @@ body {
 
 #yes-line circle {
   fill: lightblue;
+  opacity: .8;
 }
 
 #yes-line path {
   fill: none;
   stroke: cornflowerblue;
   stroke-width: 2px;
+}
+
+#date-axis text,
+#yes-axis text {
+  font-size: 14px;
+}
+
+#date-axis .domain,
+#yes-axis .domain {
+  stroke: gray;
+}
+
+#date-axis #date-title,
+#yes-axis #yes-title {
+  fill: black;
+  font-size: 16px;
+  text-anchor: middle;
+  dominant-baseline: middle;
 }
