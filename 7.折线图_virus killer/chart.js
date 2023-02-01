@@ -37,14 +37,13 @@ const yesAxis = content.append('g')
 d3.json('./assets/sh_day.json')
   .then(drawLineChart)
 
-function drawLineChart(dataset) {
-  console.log(dataset)
-  // 我们的日期格式是"2022-04-01",
-  // d3.scaleTime().domain([min,max])中min和max是代表定义域范围，
-  // 在scaleTime中，min的格式只接受标准时间格式，
-  // 所以我们需要借助这个工具函数去转换。
-  const parseTime = d3.timeParse('%Y-%m-%d')
+// 我们的日期格式是"2022-04-01",
+// d3.scaleTime().domain([min,max])中min和max是代表定义域范围，
+// 在scaleTime中，min的格式只接受标准时间格式，
+// 所以我们需要借助这个工具函数去转换。
+const parseTime = d3.timeParse('%Y-%m-%d')
 
+function computeScale(dataset) {
   // - 时间比例尺
   const dateScale = d3.scaleTime()
     .domain(d3.extent(dataset, item => parseTime(item.date))) //定义域
@@ -54,11 +53,11 @@ function drawLineChart(dataset) {
   // 📌笔记
   console.log(d3.extent(dataset, item => parseTime(item.date)))
   /*
-  d3.extent(array[,accessor])：给定一个数组，返回[最小值, 最大值]
-  本例给的不是一个一维数组，所以要用到 item => parseTime(item.date) 拿出date数据
-  又因为我们的时间格式不是标准时间格式 extent 无法比较，所以要借助 parseTime 来转换。
-  最后打印结果：["2022-03-31T16:00:00.000Z","2022-05-07T16:00:00.000Z"]
-  我们的时区+8，对比 dataset 可知，最小值、最大值是正确的。
+    d3.extent(array[,accessor])：给定一个数组，返回[最小值, 最大值]
+    本例给的不是一个一维数组，所以要用到 item => parseTime(item.date) 拿出date数据
+    又因为我们的时间格式不是标准时间格式 extent 无法比较，所以要借助 parseTime 来转换。
+    最后打印结果：["2022-03-31T16:00:00.000Z","2022-05-07T16:00:00.000Z"]
+    我们的时区+8，对比 dataset 可知，最小值、最大值是正确的。
  */
 
   // - 确诊人数，线性比例尺
@@ -66,8 +65,22 @@ function drawLineChart(dataset) {
     .domain(d3.extent(dataset, item => item.yes))
     .range([contentHeight, dms.margin.top])
     .nice()
+  /*
+    nice()：
+    如果域是根据实际数据自动计算的（例如，通过使用<code>d3.extent</code>），
+    则开始值和结束值可能不是整数。
+    这不一定是个问题，但它可能看起来有点不整洁。
+    因此，D3.nice()提供了一个刻度函数，它将域四舍五入到“不错”的舍入值。
+   */
 
-  // - 绘制确诊人数折线图
+  return {
+    dateScale,
+    yesScale,
+  }
+}
+
+// 绘制确诊人数折线图
+function drawYesLine(dataset, dateScale, yesScale) {
   // 绘制点
   yesLine.selectAll('circle')
     .data(dataset)
@@ -79,11 +92,14 @@ function drawLineChart(dataset) {
   const lineGenerator = d3.line()
     .x(item => dateScale(parseTime(item.date)))
     .y(item => yesScale(item.yes))
-    .curve(d3.curveCatmullRom)
+    .curve(d3.curveCatmullRom) //曲线
 
   yesLine.append('path')
-    .attr('d', lineGenerator(dataset))
+    .attr('d', lineGenerator(dataset)) // lineGenerator(dataset) 返回的就是路径信息
+}
 
+// 绘制时间、确诊人数坐标轴
+function drawAxis(dateScale, yesScale) {
   // - date坐标轴
   const dateAxisGenerator = d3.axisBottom()
     .scale(dateScale)
@@ -108,5 +124,12 @@ function drawLineChart(dataset) {
     .attr('x', 0)
     .attr('y', 30)
     .text('确诊人数')
+}
+
+function drawLineChart(dataset) {
+  console.log(dataset)
+  const { dateScale, yesScale } = computeScale(dataset)
+  drawYesLine(dataset, dateScale, yesScale)
+  drawAxis(dataset, dateScale, yesScale)
 }
 
