@@ -130,6 +130,6 @@ function drawLineChart(dataset) {
   console.log(dataset)
   const { dateScale, yesScale } = computeScale(dataset)
   drawYesLine(dataset, dateScale, yesScale)
-  drawAxis(dataset, dateScale, yesScale)
+  drawAxis(dateScale, yesScale)
 }
 
